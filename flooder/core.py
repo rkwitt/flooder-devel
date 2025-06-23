@@ -58,7 +58,7 @@ def flood_complex(
     disable_kernel: bool = False,
     do_second_stage: bool = False,
     return_simplex_tree: bool = False,
-) -> dict:
+) -> Union[gudhi.SimplexTree, dict[tuple[int], float]]:
     """
     Constructs a Flood complex from a set of landmark and witness points.
 
@@ -83,12 +83,15 @@ def flood_complex(
         do_second_stage (bool, optional):
             If True, performs a secondary refinement step to improve the accuracy
             of the covering radii. Defaults to False.
+        return_simplex_tree (bool, optional):
+            If True, returns a `gudhi.SimplexTree` object instead of a dictionary
+            mapping simplices to their estimated covering radii. Defaults to False. 
 
     Returns:
-        dict:
-            A dictionary mapping simplices to their estimated covering radii (i.e., filtration
-            value). Each key is a tuple of landmark indices (e.g., (i, j) for an edge), and
-            each value is a float radius.
+        Union[gudhi.SimplexTree, dict[tuple[int], float]]: 
+            If `return_simplex_tree` is True, returns a `gudhi.SimplexTree` object.
+            Otherwise, returns a dictionary mapping each simplex (as a tuple of vertex indices)
+            to its filtration value.
 
     Notes:
         Triton kernel launches may fail if grid dimensions exceed hardware limits.
