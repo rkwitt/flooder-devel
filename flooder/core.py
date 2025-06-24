@@ -85,10 +85,10 @@ def flood_complex(
             of the covering radii. Defaults to False.
         return_simplex_tree (bool, optional):
             If True, returns a `gudhi.SimplexTree` object instead of a dictionary
-            mapping simplices to their estimated covering radii. Defaults to False. 
+            mapping simplices to their estimated covering radii. Defaults to False.
 
     Returns:
-        Union[gudhi.SimplexTree, dict[tuple[int], float]]: 
+        Union[gudhi.SimplexTree, dict[tuple[int], float]]:
             If `return_simplex_tree` is True, returns a `gudhi.SimplexTree` object.
             Otherwise, returns a dictionary mapping each simplex (as a tuple of vertex indices)
             to its filtration value.

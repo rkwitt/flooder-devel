@@ -66,26 +66,27 @@ def flood_triton_filtered(
     inter = torch.full((S, R), torch.inf, device=x.device, dtype=torch.float32)
 
     # Bounds check
-    assert row_idx.shape ==  col_idx.shape, f"row_idx.shape ({row_idx.shape}) does not match col_idx.shape ({col_idx.shape}"
-    assert col_idx.shape[0] == T * BLOCK_W, f"col_idx.shape[0] {col_idx.shape[0]} does not match T * BLOCK_W ({T} * {BLOCK_W} = {T * BLOCK_W})"    
+    assert row_idx.shape == col_idx.shape, f"row_idx.shape ({row_idx.shape}) does not match col_idx.shape ({col_idx.shape}"
+    assert col_idx.shape[0] == T * BLOCK_W, f"col_idx.shape[0] {col_idx.shape[0]} does not match T * BLOCK_W ({T} * {BLOCK_W} = {T * BLOCK_W})"
 
-    row_idx = row_idx[::BLOCK_W] # consecutive row_indices need to be constant in blocks of length BLOCK_W
+    row_idx = row_idx[::BLOCK_W]  # consecutive row_indices need to be constant in blocks of length BLOCK_W
     # make sure indexing is contiguous and of type int32 for triton
     row_idx = row_idx.to(torch.int32).contiguous()
     col_idx = col_idx.to(torch.int32).contiguous()
 
-    """Important: run ./deviceQuery from 
-    
+    """Important: run ./deviceQuery from
+
     https://github.com/NVIDIA/cuda-samples/
-    
-    and check for "Max dimension size of a grid size" as the grid may become 
+
+    and check for "Max dimension size of a grid size" as the grid may become
     too large for the GPU to handle. If this is the case, you can set
     disable_kernel=True in the flood_complex function to use the CPU fallback, or
     reduce the batch size.
     """
 
     try:
-        def grid(meta): return (R_tiles, T)
+        def grid(meta):
+            return (R_tiles, T)
         x = x.contiguous().view(-1)  # Make sure indexing math (later) matches layout
         flood_kernel[grid](
             x, y, row_idx, col_idx, inter, R, W, d, BLOCK_R=BLOCK_R, BLOCK_W=BLOCK_W

@@ -68,13 +68,12 @@ def test_vs_alpha_1(disable_kernel, batch_size, N):
     )
 
 
-
 @pytest.mark.parametrize("num_witnesses", [1000, 10_000])
-@pytest.mark.parametrize("num_landmarks", [20, 701, 1000, 2000]) 
+@pytest.mark.parametrize("num_landmarks", [20, 701, 1000, 2000])
 def test_naive_vs_triton(num_witnesses, num_landmarks):
     """
     Test consistency of the Flood complex between naive and Triton computation
-    for different batch sizes, number of witnesses and number of landmarks. 
+    for different batch sizes, number of witnesses and number of landmarks.
     Tests also number of landmars being equal or larger than number of witnesses.
     """
 
@@ -82,11 +81,11 @@ def test_naive_vs_triton(num_witnesses, num_landmarks):
 
     torch.manual_seed(42)
     np.random.seed(42)
-    
+
     X = generate_noisy_torus_points(num_witnesses).to(DEVICE)
     L = generate_landmarks(X, num_landmarks)
 
-    # Test w kernel 
+    # Test w kernel
     torch.manual_seed(42)
     np.random.seed(42)
     fc_triton = flood_complex(
@@ -99,17 +98,17 @@ def test_naive_vs_triton(num_witnesses, num_landmarks):
     fc_naive = flood_complex(
         L, X, dim=3, batch_size=32, disable_kernel=True
     )
-    
+
     for simplex in fc_naive:
         assert simplex in fc_triton
         assert abs(fc_naive[simplex] - fc_triton[simplex]) < 1e-3, \
-        f"Simplex {simplex}: Naive {fc_naive[simplex]:.5f} and Triton {fc_triton[simplex]:.5f}"
+            f"Simplex {simplex}: Naive {fc_naive[simplex]:.5f} and Triton {fc_triton[simplex]:.5f}"
 
 
 @pytest.mark.parametrize("num_witnesses", [1000, 10_000])
-@pytest.mark.parametrize("num_landmarks", [20, 1000]) 
-@pytest.mark.parametrize("mode", ['CPU', 'dist', 'Triton']) 
-@pytest.mark.parametrize("return_simplex_tree", [True, False]) 
+@pytest.mark.parametrize("num_landmarks", [20, 1000])
+@pytest.mark.parametrize("mode", ['CPU', 'dist', 'Triton'])
+@pytest.mark.parametrize("return_simplex_tree", [True, False])
 def test_filtration_condition(num_witnesses, num_landmarks, mode, return_simplex_tree):
     """
     Test that the Flood complex is a filtered complex.
@@ -132,8 +131,8 @@ def test_filtration_condition(num_witnesses, num_landmarks, mode, return_simplex
     np.random.seed(42)
     X = generate_noisy_torus_points(num_witnesses).to(device)
     L = generate_landmarks(X, num_landmarks)
-    
-    if return_simplex_tree == False:
+
+    if not return_simplex_tree:
         fc = flood_complex(
             L, X, dim=3, batch_size=32, disable_kernel=disable_kernel, return_simplex_tree=False
         )
@@ -147,13 +146,11 @@ def test_filtration_condition(num_witnesses, num_landmarks, mode, return_simplex
         )
 
     for simplex, filtration in st.get_simplices():
-        faces = [ _ for _ in st.get_boundaries(simplex)]
+        faces = [_ for _ in st.get_boundaries(simplex)]
         if len(simplex) > 1:
             assert len(faces) == len(simplex), f"Simplex {simplex} has {len(faces)} faces"
         else:
             assert len(simplex) == 1 and len(faces) == 0, f"Simplex {simplex} has {len(faces)} faces"
-        
+
         for face, face_filtration in faces:
             assert face_filtration <= filtration, f"Simplex {simplex} has filtr. value {filtration:.5f} and its face {face} has {face_filtration:.5f}"
-
-

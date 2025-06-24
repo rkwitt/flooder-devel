@@ -20,21 +20,21 @@ def generate_figure_eight_2D_points(
     """
     Generate 2D points uniformly sampled in a figure-eight shape, with optional noise.
 
-    This function samples `n_samples` points distributed across two circular lobes 
-    (forming a figure-eight shape) centered at specified coordinates. Optionally, 
+    This function samples `n_samples` points distributed across two circular lobes
+    (forming a figure-eight shape) centered at specified coordinates. Optionally,
     isotropic Gaussian or uniform noise can be added to the coordinates.
 
     Args:
         n_samples (int, optional): Number of 2D points to generate. Defaults to 1000.
-        r_bounds (Tuple[float, float], optional): Tuple specifying the minimum and maximum 
+        r_bounds (Tuple[float, float], optional): Tuple specifying the minimum and maximum
             radius for sampling within each lobe. Defaults to (0.2, 0.3).
-        centers (Tuple[Tuple[float, float], Tuple[float, float]], optional): Coordinates 
+        centers (Tuple[Tuple[float, float], Tuple[float, float]], optional): Coordinates
             of the centers of the two lobes. Defaults to ((0.3, 0.5), (0.7, 0.5)).
-        noise_std (float, optional): Standard deviation (for Gaussian) or half-width 
+        noise_std (float, optional): Standard deviation (for Gaussian) or half-width
             (for uniform) of noise to add to each point. Defaults to 0.0 (no noise).
-        noise_kind (Literal["gaussian", "uniform"], optional): Type of noise distribution 
+        noise_kind (Literal["gaussian", "uniform"], optional): Type of noise distribution
             to use if `noise_std > 0`. Defaults to "gaussian".
-        rng (Optional[np.random.Generator], optional): Optional NumPy random number 
+        rng (Optional[np.random.Generator], optional): Optional NumPy random number
             generator for reproducibility. If None, a new default generator is used.
 
     Returns:
@@ -85,12 +85,12 @@ def generate_swiss_cheese_points(
 
     Args:
         N (int, optional): Number of points to generate. Defaults to 1000.
-        rect_min (torch.Tensor, optional): Minimum coordinates of the rectangular region. 
+        rect_min (torch.Tensor, optional): Minimum coordinates of the rectangular region.
             Defaults to a tensor of six zeros.
-        rect_max (torch.Tensor, optional): Maximum coordinates of the rectangular region. 
+        rect_max (torch.Tensor, optional): Maximum coordinates of the rectangular region.
             Defaults to a tensor of six ones.
         k (int, optional): Number of spherical voids to generate. Defaults to 6.
-        void_radius_range (Tuple[float, float], optional): Range `(min_radius, max_radius)` 
+        void_radius_range (Tuple[float, float], optional): Range `(min_radius, max_radius)`
             for the void radii. Defaults to (0.1, 0.2).
         rng (int, optional): Random seed for reproducibility. If None, randomness is not seeded.
 
@@ -98,8 +98,8 @@ def generate_swiss_cheese_points(
         Tuple[torch.Tensor, torch.Tensor]: A tuple containing:
             - `points` (torch.Tensor): Tensor of shape (N, dim) with generated sample points.
             - `void_radii` (torch.Tensor): Tensor of shape (k,) with the radii of the voids.
-    
-    Examples:    
+
+    Examples:
         >>> rect_min = torch.tensor([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
         >>> rect_max = torch.tensor([1.0, 1.0, 1.0, 1.0, 1.0, 1.0])
         >>> void_radius_range = (0.1, 0.2)
@@ -160,12 +160,12 @@ def generate_donut_points(
     """
     Generate 2D points uniformly distributed in a circular annulus (donut shape).
 
-    Points are sampled uniformly within a ring defined by an outer `radius` and 
+    Points are sampled uniformly within a ring defined by an outer `radius` and
     an inner radius of `radius - width`, centered at a specified 2D location.
 
     Args:
         N (int, optional): Number of points to generate. Defaults to 1000.
-        center (torch.Tensor, optional): Center of the annulus as a tensor of shape (2,). 
+        center (torch.Tensor, optional): Center of the annulus as a tensor of shape (2,).
             Defaults to [0.0, 0.0].
         radius (float, optional): Outer radius of the annulus. Must be positive. Defaults to 1.0.
         width (float, optional): Thickness of the annulus. Must be positive and less than `radius`.
@@ -212,11 +212,11 @@ def generate_noisy_torus_points(
 
     Args:
         num_points (int, optional): Number of points to generate. Defaults to 1000.
-        R (float, optional): Major radius of the torus (distance from the center of the tube 
+        R (float, optional): Major radius of the torus (distance from the center of the tube
             to the center of the torus). Must be positive. Defaults to 3.0.
-        r (float, optional): Minor radius of the torus (radius of the tube). Must be positive. 
+        r (float, optional): Minor radius of the torus (radius of the tube). Must be positive.
             Defaults to 1.0.
-        noise_std (float, optional): Standard deviation of the Gaussian noise added to the 
+        noise_std (float, optional): Standard deviation of the Gaussian noise added to the
             points. Defaults to 0.02.
         rng (int, optional): Random seed for reproducibility. If None, randomness is not seeded.
 
