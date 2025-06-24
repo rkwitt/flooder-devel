@@ -50,7 +50,7 @@ Here's a step-by-step example of how to contribute to `flooder`.
    git commit -a -m "ENH: Fixed some typos."
    ```
 
-   *What if `upstream/main` divereged in the meantime (e.g., a PR 
+   *What if `upstream/main` diverged in the meantime (e.g., a PR 
    got merged or so)?*
 
    ```bash
