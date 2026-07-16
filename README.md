@@ -9,7 +9,7 @@
 
 <div align="center">
   
-[![PyPI version](https://img.shields.io/pypi/v/flooder.svg?logo=pypi)](https://pypi.org/project/flooder/1.0/)
+[![PyPI version](https://img.shields.io/pypi/v/flooder.svg?logo=pypi)](https://pypi.org/project/flooder/1.0.1/)
 [![Docs](https://img.shields.io/badge/docs-latest-blue?logo=readthedocs)](https://plus-rkwitt.github.io/flooder/)
 [![Website](https://img.shields.io/badge/paper-NeurIPS'25-44cc11?logo=google-chrome)](https://arxiv.org/abs/2509.22432)
 </div>
