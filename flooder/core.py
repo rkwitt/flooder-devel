@@ -20,8 +20,11 @@ from scipy.spatial import KDTree
 try:
     from .triton_kernels import compute_mask, compute_filtration, tl_dtypes_dict
     HAS_TRITON_KERNELS = True
+    TRITON_IMPORT_ERROR = None
 except Exception as e:
+    # triton import failed, so we cannot use triton kernels
     HAS_TRITON_KERNELS = False
+    TRITON_IMPORT_ERROR = e
 
 BLOCK_W = 512
 BLOCK_R = 16
@@ -93,7 +96,7 @@ def flood_complex(
     if use_triton and not HAS_TRITON_KERNELS:
         raise ImportError(
             "use_triton=True requested, but Triton kernels are not available in this environment."
-        )
+        ) from TRITON_IMPORT_ERROR
     if max_dimension is None:
         max_dimension = points.shape[1]
     if isinstance(landmarks, Integral):
@@ -106,14 +109,12 @@ def flood_complex(
         )
     if landmarks.dtype != points.dtype:
         raise RuntimeError(
-
-
             f"landmarks.dtype ({landmarks.dtype}) != points.device ({points.dtype})"
         )
     device = points.device
     dtype = points.dtype
 
-    if dtype not in tl_dtypes_dict:
+    if dtype not in (torch.float32, torch.float64):
         raise TypeError(f"dtype ({dtype}) not supported")
     if dtype is torch.float64:
         warnings.warn(
@@ -128,8 +129,10 @@ def flood_complex(
         kdtree = KDTree(np.asarray(points))
 
     stree = gudhi.DelaunayComplex(  # pylint: disable=no-member
-        landmarks
-    ).create_simplex_tree()
+        landmarks.detach()
+            .to(device="cpu", dtype=torch.float64)
+            .contiguous()
+            .numpy()).create_simplex_tree()
     out_complex = {}
 
     simplices = [[] for _ in range(max_dimension + 1)]
