@@ -18,7 +18,7 @@ from scipy.spatial import KDTree
 
 # catch triton import errors, so that users can still use CPU functionality
 try:
-    from .triton_kernels import compute_mask, compute_filtration, tl_dtypes_dict
+    from .triton_kernels import compute_mask, compute_filtration
     HAS_TRITON_KERNELS = True
     TRITON_IMPORT_ERROR = None
 except Exception as e:
@@ -129,10 +129,8 @@ def flood_complex(
         kdtree = KDTree(np.asarray(points))
 
     stree = gudhi.DelaunayComplex(  # pylint: disable=no-member
-        landmarks.detach()
-            .to(device="cpu", dtype=torch.float64)
-            .contiguous()
-            .numpy()).create_simplex_tree()
+        landmarks.detach().to(device="cpu", dtype=torch.float64).contiguous().numpy()
+    ).create_simplex_tree()
     out_complex = {}
 
     simplices = [[] for _ in range(max_dimension + 1)]
